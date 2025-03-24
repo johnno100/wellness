@@ -12,10 +12,10 @@ import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 
 // Main Screens
 import DashboardScreen from '../screens/dashboard/DashboardScreen';
-import MentalHealthScreen from '../screens/mentalHealth/MentalHealthScreen';
-import SleepScreen from '../screens/sleep/SleepScreen';
-import NutritionScreen from '../screens/nutrition/NutritionScreen';
-import FitnessScreen from '../screens/fitness/FitnessScreen';
+import MentalHealthScreen from '../screens/mentalHealth/MentalHealthScreen 2';
+import SleepScreen from '../screens/sleep/SleepScreen 2';
+import NutritionScreen from '../screens/nutrition/NutritionScreen 2';
+import FitnessScreen from '../screens/fitness/FitnessScreen 2';
 import ProfileScreen from '../screens/profile/ProfileScreen';
 import SettingsScreen from '../screens/settings/SettingsScreen';
 

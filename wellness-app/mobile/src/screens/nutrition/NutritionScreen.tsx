@@ -1,468 +1,340 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Image } from 'react-native';
-import { Text, Card, Title, Paragraph, Button, TextInput, Chip, FAB } from 'react-native-paper';
+import { Text, Card, Title, Paragraph, Button, List, Divider, Chip } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { theme } from '../../config/theme';
 import PassioApiAdapter from '../../services/api/PassioApiAdapter';
-import { fetchNutritionDataStart, fetchNutritionDataSuccess, fetchNutritionDataFailure, addFoodEntry } from '../../redux/slices/nutritionSlice';
 
 const NutritionScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
-  const { foodEntries, dailyCalories, dailyNutrients, loading, error } = useSelector(
-    (state: RootState) => state.nutrition
-  );
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [isSearching, setIsSearching] = useState(false);
-
-  const handleRefresh = async () => {
-    dispatch(fetchNutritionDataStart());
+  const nutrition = useSelector((state: RootState) => state.nutrition);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  useEffect(() => {
+    // Fetch nutrition data when component mounts
+    fetchNutritionData();
+  }, []);
+  
+  const fetchNutritionData = async () => {
+    setIsLoading(true);
     try {
       // In a real app, this would fetch data from the Passio API
-      // const nutritionData = await PassioApiAdapter.getNutritionData();
-      
-      // For demo purposes, we'll use mock data
-      const mockData = {
-        foodEntries: [
-          {
-            id: '1',
-            name: 'Grilled Chicken Salad',
-            timestamp: '2025-03-23T12:30:00Z',
-            calories: 350,
-            nutrients: {
-              protein: 30,
-              carbs: 15,
-              fat: 18,
-              fiber: 5,
-              sugar: 3,
-            },
-            mealType: 'lunch',
-            image: 'https://example.com/chicken-salad.jpg',
-          },
-          {
-            id: '2',
-            name: 'Oatmeal with Berries',
-            timestamp: '2025-03-23T08:00:00Z',
-            calories: 280,
-            nutrients: {
-              protein: 8,
-              carbs: 45,
-              fat: 6,
-              fiber: 7,
-              sugar: 12,
-            },
-            mealType: 'breakfast',
-            image: 'https://example.com/oatmeal.jpg',
-          },
-          {
-            id: '3',
-            name: 'Protein Smoothie',
-            timestamp: '2025-03-22T16:00:00Z',
-            calories: 220,
-            nutrients: {
-              protein: 20,
-              carbs: 25,
-              fat: 5,
-              fiber: 3,
-              sugar: 15,
-            },
-            mealType: 'snack',
-            image: 'https://example.com/smoothie.jpg',
-          },
-        ],
-        dailyCalories: 1800,
-        dailyNutrients: {
-          protein: 95,
-          carbs: 200,
-          fat: 60,
-          fiber: 25,
-          sugar: 45,
-        },
-      };
-      
-      dispatch(fetchNutritionDataSuccess(mockData));
+      // For demo purposes, we'll simulate a successful API call
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1500);
     } catch (error) {
-      dispatch(fetchNutritionDataFailure(error.message));
+      console.error('Error fetching nutrition data:', error);
+      setIsLoading(false);
     }
   };
-
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
+  
+  const renderMealHistory = () => {
+    const mealData = nutrition.mealHistory || [
+      { 
+        id: 1, 
+        time: 'Breakfast', 
+        items: ['Oatmeal with berries', 'Greek yogurt', 'Coffee'],
+        calories: 420,
+        image: 'https://placeholder.com/wp-content/uploads/2018/10/placeholder.png'
+      },
+      { 
+        id: 2, 
+        time: 'Lunch', 
+        items: ['Grilled chicken salad', 'Whole grain bread', 'Apple'],
+        calories: 580,
+        image: 'https://placeholder.com/wp-content/uploads/2018/10/placeholder.png'
+      },
+      { 
+        id: 3, 
+        time: 'Snack', 
+        items: ['Mixed nuts', 'Banana'],
+        calories: 280,
+        image: 'https://placeholder.com/wp-content/uploads/2018/10/placeholder.png'
+      },
+      { 
+        id: 4, 
+        time: 'Dinner', 
+        items: ['Salmon', 'Quinoa', 'Roasted vegetables'],
+        calories: 520,
+        image: 'https://placeholder.com/wp-content/uploads/2018/10/placeholder.png'
+      },
+    ];
     
-    setIsSearching(true);
-    try {
-      // In a real app, this would search for food using the Passio API
-      // const results = await PassioApiAdapter.searchForFood(searchQuery);
-      
-      // For demo purposes, we'll use mock data
-      const mockResults = [
-        {
-          id: 'f1',
-          name: 'Apple',
-          calories: 95,
-          nutrients: {
-            protein: 0.5,
-            carbs: 25,
-            fat: 0.3,
-            fiber: 4.4,
-            sugar: 19,
-          },
-          serving: '1 medium (182g)',
-          image: 'https://example.com/apple.jpg',
-        },
-        {
-          id: 'f2',
-          name: 'Banana',
-          calories: 105,
-          nutrients: {
-            protein: 1.3,
-            carbs: 27,
-            fat: 0.4,
-            fiber: 3.1,
-            sugar: 14,
-          },
-          serving: '1 medium (118g)',
-          image: 'https://example.com/banana.jpg',
-        },
-        {
-          id: 'f3',
-          name: 'Orange',
-          calories: 62,
-          nutrients: {
-            protein: 1.2,
-            carbs: 15.4,
-            fat: 0.2,
-            fiber: 3.1,
-            sugar: 12.2,
-          },
-          serving: '1 medium (131g)',
-          image: 'https://example.com/orange.jpg',
-        },
-      ];
-      
-      setSearchResults(mockResults);
-    } catch (error) {
-      console.error('Failed to search for food:', error);
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
-  const handleAddFood = (food) => {
-    const newFoodEntry = {
-      id: Date.now().toString(),
-      name: food.name,
-      timestamp: new Date().toISOString(),
-      calories: food.calories,
-      nutrients: food.nutrients,
-      mealType: 'snack', // Default meal type
-      image: food.image,
-    };
-    
-    dispatch(addFoodEntry(newFoodEntry));
-    setSearchQuery('');
-    setSearchResults([]);
-  };
-
-  const renderFoodEntry = (entry) => {
-    return (
-      <Card style={styles.foodEntryCard} key={entry.id}>
+    return mealData.map((meal) => (
+      <Card key={meal.id} style={styles.mealCard}>
         <Card.Content>
-          <View style={styles.foodEntryHeader}>
+          <View style={styles.mealHeader}>
             <View>
-              <Text style={styles.foodEntryName}>{entry.name}</Text>
-              <Text style={styles.foodEntryTime}>
-                {new Date(entry.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </Text>
+              <Title>{meal.time}</Title>
+              <Paragraph>{meal.calories} calories</Paragraph>
             </View>
-            <Chip mode="outlined">{entry.mealType}</Chip>
+            <Image 
+              source={{ uri: meal.image }} 
+              style={styles.mealImage} 
+            />
           </View>
           
-          <View style={styles.nutrientsContainer}>
-            <View style={styles.nutrientItem}>
-              <Text style={styles.nutrientValue}>{entry.calories}</Text>
-              <Text style={styles.nutrientLabel}>Calories</Text>
-            </View>
-            <View style={styles.nutrientItem}>
-              <Text style={styles.nutrientValue}>{entry.nutrients.protein}g</Text>
-              <Text style={styles.nutrientLabel}>Protein</Text>
-            </View>
-            <View style={styles.nutrientItem}>
-              <Text style={styles.nutrientValue}>{entry.nutrients.carbs}g</Text>
-              <Text style={styles.nutrientLabel}>Carbs</Text>
-            </View>
-            <View style={styles.nutrientItem}>
-              <Text style={styles.nutrientValue}>{entry.nutrients.fat}g</Text>
-              <Text style={styles.nutrientLabel}>Fat</Text>
-            </View>
+          <Divider style={styles.divider} />
+          
+          <View>
+            {meal.items.map((item, index) => (
+              <Chip key={index} style={styles.foodChip}>{item}</Chip>
+            ))}
           </View>
         </Card.Content>
       </Card>
-    );
+    ));
   };
-
-  const renderSearchResult = (food) => {
-    return (
-      <Card style={styles.searchResultCard} key={food.id}>
-        <Card.Content>
-          <View style={styles.searchResultHeader}>
-            <View>
-              <Text style={styles.searchResultName}>{food.name}</Text>
-              <Text style={styles.searchResultServing}>{food.serving}</Text>
-            </View>
-            <Text style={styles.searchResultCalories}>{food.calories} cal</Text>
-          </View>
-          
-          <View style={styles.searchResultNutrients}>
-            <Text>Protein: {food.nutrients.protein}g</Text>
-            <Text>Carbs: {food.nutrients.carbs}g</Text>
-            <Text>Fat: {food.nutrients.fat}g</Text>
-          </View>
-        </Card.Content>
-        <Card.Actions>
-          <Button onPress={() => handleAddFood(food)}>Add</Button>
-        </Card.Actions>
-      </Card>
-    );
-  };
-
+  
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <Card style={styles.card}>
-          <Card.Content>
-            <Title>Daily Nutrition</Title>
-            <View style={styles.caloriesContainer}>
-              <Text style={styles.caloriesValue}>{dailyCalories || '1800'}</Text>
-              <Text style={styles.caloriesLabel}>calories</Text>
+    <ScrollView style={styles.container}>
+      <Card style={styles.card}>
+        <Card.Content>
+          <Title>Today's Nutrition</Title>
+          
+          <View style={styles.calorieContainer}>
+            <View style={styles.calorieCircle}>
+              <Text style={styles.calorieValue}>{nutrition.dailyCalories || '1800'}</Text>
+              <Text style={styles.calorieLabel}>calories</Text>
             </View>
             
-            <Title style={styles.macrosTitle}>Macronutrients</Title>
-            <View style={styles.macrosContainer}>
-              <View style={styles.macroItem}>
-                <Text style={styles.macroValue}>{dailyNutrients?.protein || '95'}g</Text>
-                <Text style={styles.macroLabel}>Protein</Text>
-              </View>
-              <View style={styles.macroItem}>
-                <Text style={styles.macroValue}>{dailyNutrients?.carbs || '200'}g</Text>
-                <Text style={styles.macroLabel}>Carbs</Text>
-              </View>
-              <View style={styles.macroItem}>
-                <Text style={styles.macroValue}>{dailyNutrients?.fat || '60'}g</Text>
-                <Text style={styles.macroLabel}>Fat</Text>
-              </View>
+            <View style={styles.calorieInfo}>
+              <Text style={styles.calorieGoal}>Goal: 2000 calories</Text>
+              <Text style={styles.calorieRemaining}>200 calories remaining</Text>
             </View>
-          </Card.Content>
-          <Card.Actions>
-            <Button onPress={handleRefresh} loading={loading}>
-              Refresh
-            </Button>
-            <Button onPress={() => navigation.navigate('ConnectPassio')}>
-              Connect Passio
-            </Button>
-          </Card.Actions>
-        </Card>
-
-        <Card style={styles.card}>
-          <Card.Content>
-            <Title>Food Search</Title>
-            <TextInput
-              label="Search for food"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              onSubmitEditing={handleSearch}
-              right={<TextInput.Icon name="magnify" onPress={handleSearch} />}
-              style={styles.searchInput}
-            />
-          </Card.Content>
-        </Card>
-
-        {isSearching ? (
-          <Card style={styles.card}>
-            <Card.Content style={styles.loadingContainer}>
-              <Text>Searching...</Text>
-            </Card.Content>
-          </Card>
-        ) : searchResults.length > 0 ? (
-          <>
-            <Title style={styles.sectionTitle}>Search Results</Title>
-            {searchResults.map(renderSearchResult)}
-          </>
-        ) : null}
-
-        <Title style={styles.sectionTitle}>Today's Food Log</Title>
-        {foodEntries && foodEntries.length > 0 ? (
-          foodEntries.map(renderFoodEntry)
-        ) : (
-          <Card style={styles.card}>
-            <Card.Content>
-              <Paragraph>No food entries recorded today. Start logging your meals!</Paragraph>
-            </Card.Content>
-          </Card>
-        )}
-
-        <Card style={styles.card}>
-          <Card.Content>
-            <Title>Nutrition Tips</Title>
-            <View style={styles.tipItem}>
-              <Text style={styles.tipTitle}>Stay Hydrated</Text>
-              <Text>Aim to drink at least 8 glasses of water daily.</Text>
+          </View>
+          
+          <View style={styles.macrosContainer}>
+            <View style={styles.macroItem}>
+              <Text style={styles.macroValue}>{nutrition.dailyNutrients?.protein || '95'}g</Text>
+              <Text style={styles.macroLabel}>Protein</Text>
             </View>
-            <View style={styles.tipItem}>
-              <Text style={styles.tipTitle}>Eat Colorful Foods</Text>
-              <Text>Include a variety of colorful fruits and vegetables in your diet for essential nutrients.</Text>
+            
+            <View style={styles.macroItem}>
+              <Text style={styles.macroValue}>{nutrition.dailyNutrients?.carbs || '180'}g</Text>
+              <Text style={styles.macroLabel}>Carbs</Text>
             </View>
-            <View style={styles.tipItem}>
-              <Text style={styles.tipTitle}>Portion Control</Text>
-              <Text>Be mindful of portion sizes to maintain a balanced calorie intake.</Text>
+            
+            <View style={styles.macroItem}>
+              <Text style={styles.macroValue}>{nutrition.dailyNutrients?.fat || '60'}g</Text>
+              <Text style={styles.macroLabel}>Fat</Text>
             </View>
-          </Card.Content>
-        </Card>
-      </ScrollView>
+            
+            <View style={styles.macroItem}>
+              <Text style={styles.macroValue}>{nutrition.dailyNutrients?.fiber || '28'}g</Text>
+              <Text style={styles.macroLabel}>Fiber</Text>
+            </View>
+          </View>
+        </Card.Content>
+      </Card>
       
-      <FAB
-        style={styles.fab}
-        icon="camera"
-        onPress={() => navigation.navigate('FoodRecognition')}
-        label="Scan Food"
-      />
-    </View>
+      <Card style={styles.card}>
+        <Card.Content>
+          <Title>Water Intake</Title>
+          
+          <View style={styles.waterContainer}>
+            <View style={styles.waterGlasses}>
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((glass) => (
+                <View 
+                  key={glass} 
+                  style={[
+                    styles.waterGlass, 
+                    glass <= (nutrition.waterIntake || 5) ? styles.waterGlassFilled : {}
+                  ]}
+                />
+              ))}
+            </View>
+            
+            <Text style={styles.waterText}>
+              {nutrition.waterIntake || 5} of 8 glasses
+            </Text>
+            
+            <Button 
+              mode="outlined" 
+              icon="plus" 
+              onPress={() => {/* Add water */}}
+              style={styles.waterButton}
+            >
+              Add Glass
+            </Button>
+          </View>
+        </Card.Content>
+      </Card>
+      
+      <Card style={styles.card}>
+        <Card.Content>
+          <View style={styles.mealHistoryHeader}>
+            <Title>Today's Meals</Title>
+            <Button 
+              mode="contained" 
+              icon="plus" 
+              onPress={() => {/* Add meal */}}
+              compact
+            >
+              Add Meal
+            </Button>
+          </View>
+          
+          {renderMealHistory()}
+        </Card.Content>
+      </Card>
+      
+      <Card style={styles.card}>
+        <Card.Content>
+          <Title>Nutrition Insights</Title>
+          
+          <List.Item
+            title="Good protein intake"
+            description="You're meeting your daily protein goals"
+            left={props => <List.Icon {...props} icon="check-circle" color={theme.colors.success} />}
+          />
+          <Divider />
+          
+          <List.Item
+            title="Low sugar consumption"
+            description="You're keeping added sugars in check"
+            left={props => <List.Icon {...props} icon="check-circle" color={theme.colors.success} />}
+          />
+          <Divider />
+          
+          <List.Item
+            title="Increase fiber intake"
+            description="Try adding more vegetables and whole grains"
+            left={props => <List.Icon {...props} icon="alert-circle" color={theme.colors.warning} />}
+          />
+        </Card.Content>
+      </Card>
+      
+      <Button 
+        mode="contained" 
+        icon="refresh" 
+        onPress={fetchNutritionData}
+        style={styles.refreshButton}
+        loading={isLoading}
+        disabled={isLoading}
+      >
+        Refresh Data
+      </Button>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  scrollView: {
-    flex: 1,
     padding: 16,
+    backgroundColor: theme.colors.background,
   },
   card: {
     marginBottom: 16,
   },
-  caloriesContainer: {
+  calorieContainer: {
     flexDirection: 'row',
-    alignItems: 'baseline',
+    alignItems: 'center',
     marginVertical: 16,
   },
-  caloriesValue: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: theme.colors.primary,
+  calorieCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: theme.colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
   },
-  caloriesLabel: {
+  calorieValue: {
     fontSize: 24,
-    marginLeft: 8,
-    color: '#666',
+    fontWeight: 'bold',
+    color: 'white',
   },
-  macrosTitle: {
-    fontSize: 18,
-    marginBottom: 8,
+  calorieLabel: {
+    fontSize: 14,
+    color: 'white',
+  },
+  calorieInfo: {
+    flex: 1,
+  },
+  calorieGoal: {
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  calorieRemaining: {
+    fontSize: 14,
+    color: theme.colors.success,
   },
   macrosContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginTop: 16,
   },
   macroItem: {
     alignItems: 'center',
-    flex: 1,
   },
   macroValue: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: theme.colors.accent,
+    color: theme.colors.primary,
   },
   macroLabel: {
     fontSize: 14,
     color: '#666',
   },
-  searchInput: {
-    marginBottom: 8,
-  },
-  loadingContainer: {
+  waterContainer: {
     alignItems: 'center',
-    padding: 16,
+    marginVertical: 16,
   },
-  sectionTitle: {
-    marginTop: 8,
+  waterGlasses: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     marginBottom: 16,
   },
-  foodEntryCard: {
-    marginBottom: 12,
+  waterGlass: {
+    width: 20,
+    height: 30,
+    borderWidth: 1,
+    borderColor: theme.colors.primary,
+    borderRadius: 4,
+    marginHorizontal: 4,
   },
-  foodEntryHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
+  waterGlassFilled: {
+    backgroundColor: theme.colors.primary,
   },
-  foodEntryName: {
+  waterText: {
     fontSize: 16,
-    fontWeight: 'bold',
-  },
-  foodEntryTime: {
-    fontSize: 14,
-    color: '#666',
-  },
-  nutrientsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  nutrientItem: {
-    alignItems: 'center',
-  },
-  nutrientValue: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  nutrientLabel: {
-    fontSize: 12,
-    color: '#666',
-  },
-  searchResultCard: {
-    marginBottom: 12,
-  },
-  searchResultHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 8,
   },
-  searchResultName: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  waterButton: {
+    marginTop: 8,
   },
-  searchResultServing: {
-    fontSize: 14,
-    color: '#666',
-  },
-  searchResultCalories: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: theme.colors.primary,
-  },
-  searchResultNutrients: {
+  mealHistoryHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
   },
-  tipItem: {
+  mealCard: {
     marginBottom: 12,
   },
-  tipTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
+  mealHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
-    backgroundColor: theme.colors.primary,
+  mealImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+  },
+  divider: {
+    marginVertical: 12,
+  },
+  foodChip: {
+    margin: 4,
+  },
+  refreshButton: {
+    marginVertical: 24,
   },
 });
 
