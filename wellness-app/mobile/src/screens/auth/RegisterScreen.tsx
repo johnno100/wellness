@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { Text, TextInput, Button, Surface } from 'react-native-paper';
-import { useDispatch } from 'react-redux';
-import { login } from '../../redux/slices/authSlice';
+import { login, loginSuccess } from '../../redux/slices/authSlice';
 import { theme } from '../../config/theme';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../redux/store'; // Adjust the path to your store
+
+const dispatch = useDispatch<AppDispatch>();
 
 const RegisterScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
@@ -41,7 +44,7 @@ const RegisterScreen = ({ navigation }: any) => {
       // For demo purposes, we'll simulate a successful registration
       setTimeout(() => {
         // After successful registration, log the user in
-        dispatch(login({
+        dispatch(loginSuccess({
           user: {
             id: '123',
             name,

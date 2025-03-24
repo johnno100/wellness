@@ -1,3 +1,4 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AuthState {
@@ -6,6 +7,23 @@ interface AuthState {
   loading: boolean;
   error: string | null;
 }
+
+export const login = createAsyncThunk(
+  'auth/login',
+  async (credentials: { user: any; token: string }, { dispatch }) => {
+    try {
+      dispatch(loginStart());
+      // In a real app, this would make an API call
+      // For demo purposes, we'll just return the credentials
+      dispatch(loginSuccess(credentials.user));
+      return credentials;
+    } catch (error) {
+      dispatch(loginFailure(error.message || 'Login failed'));
+      throw error;
+    }
+  }
+);
+
 
 const initialState: AuthState = {
   isAuthenticated: false,
