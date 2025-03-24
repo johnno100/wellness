@@ -30,7 +30,7 @@ The Wellness App MVP is a mobile application that integrates with multiple healt
 
 ## Project Structure
 
-```
+```text
 wellness-app-mvp/
 ├── src/
 │   ├── assets/           # Images, fonts, and other static assets
