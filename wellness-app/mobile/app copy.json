@@ -1,0 +1,10 @@
+{
+  "name": "WellnessAppMVP",
+  "displayName": "Wellness App MVP",
+  "expo": {
+    "slug": "WellnessAppMVP",
+    "name": "WellnessAppMVP",
+    "sdkVersion": "49.0.0"
+//    "entryPoint": ".vscode/exponentIndex.js"
+  }
+}

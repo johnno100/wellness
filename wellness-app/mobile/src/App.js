@@ -19,6 +19,7 @@ app.use(helmet()); // Security headers
 app.use(cors()); // Enable CORS
 app.use(express.json()); // Parse JSON bodies
 app.use(morgan('combined')); // HTTP request logging
+app.use(winston.errorLogger()); // Log errors with Winston
 
 // Set up routes
 app.use('/api/auth', authRoutes);

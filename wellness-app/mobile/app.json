@@ -1,4 +1,19 @@
 {
   "name": "WellnessAppMVP",
-  "displayName": "Wellness App MVP"
+  "displayName": "Wellness App MVP",
+  "expo": {
+    "slug": "Wellness-App-MVP",
+    "name": "WellnessAppMVP",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/Favicon Original.png",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
 }

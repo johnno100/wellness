@@ -1,3 +1,4 @@
+// filepath: /workspaces/wellness/wellness-app/mobile/metro.config.js
 /**
  * Metro configuration for React Native
  * https://github.com/facebook/react-native
@@ -5,11 +6,16 @@
  * @format
  */
 
-const { getDefaultConfig } = require('@react-native/metro-config');
+const { getDefaultConfig } = require('@expo/metro-config');
 
+// Extend the default Expo Metro configuration
 const defaultConfig = getDefaultConfig(__dirname);
 
 module.exports = {
+  ...defaultConfig, // Use Expo's default Metro configuration
+  server: {
+    port: 8081, // Specify the port for the packager
+  },
   transformer: {
     getTransformOptions: async () => ({
       transform: {
@@ -19,9 +25,8 @@ module.exports = {
     }),
   },
   resolver: {
-    // Add any resolver configurations here
-    sourceExts: ['jsx', 'js', 'ts', 'tsx', 'json'],
+    ...defaultConfig.resolver,
+    sourceExts: ['jsx', 'js', 'ts', 'tsx', 'json'], // Add custom extensions if needed
   },
-  maxWorkers: 2,
-  // Add any additional Metro configurations here
+  maxWorkers: 2, // Adjust workers for performance if needed
 };
