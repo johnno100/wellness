@@ -1,9 +1,8 @@
 {
-  "name": "WellnessAppMVP",
-  "displayName": "Wellness App MVP",
   "expo": {
-    "slug": "Wellness-App-MVP",
+    "slug": "WellnessAppMVP",
     "name": "WellnessAppMVP",
+    "jsEngine": "hermes",
     "platforms": [
       "ios",
       "android",
