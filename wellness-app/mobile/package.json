@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
@@ -34,7 +34,8 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.2",
     "sahha-react-native": "^1.1.4",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "expo": "~52.0.40"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

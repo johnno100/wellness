@@ -10,9 +10,15 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/Favicon Original.png",
+    "icon": "./src/assets/Favicon Original.ico",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "com.anonymous.WellnessAppMVP"
+    },
+    "ios": {
+      "bundleIdentifier": "com.anonymous.WellnessAppMVP"
+    }
   }
 }
