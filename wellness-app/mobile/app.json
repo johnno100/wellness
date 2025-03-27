@@ -10,7 +10,7 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/Favicon Original.ico",
+    "icon": "./src/assets/Wordpress.png",
     "assetBundlePatterns": [
       "**/*"
     ],
