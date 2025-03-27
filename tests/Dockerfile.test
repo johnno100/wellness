@@ -1,0 +1,27 @@
+# Use Node.js 18 as the base image
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies for testing
+RUN apk add --no-cache python3 make g++ curl
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy test configuration
+COPY jest.config.js ./
+COPY .env.test ./
+
+# Copy source code and tests
+COPY src/ ./src/
+
+# Set environment to test
+ENV NODE_ENV=test
+
+# Command to run tests
+CMD ["npm", "run", "test"]
