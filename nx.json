@@ -2,9 +2,6 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "targetDefaults": {
     "test": {
-      "outputs": [
-        "{projectRoot}/coverage"
-      ],
       "cache": true
     },
     "dev": {
