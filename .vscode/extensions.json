@@ -1,5 +1,6 @@
 {
-    "recommendations": [
-        "msjsdiag.vscode-react-native"
-    ]
+  "recommendations": [
+    "msjsdiag.vscode-react-native",
+    "dbaeumer.vscode-eslint"
+  ]
 }
